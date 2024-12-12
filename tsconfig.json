@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+      "types": [
+          "node",
+          "expect-webdriverio",
+          "@wdio/globals/types",
+          "@wdio/mocha-framework"
+          
+      ],
+      "target": "ES5",
+      "resolveJsonModule": true,
+      "esModuleInterop": true
+  }
+}

@@ -1,0 +1,168 @@
+{
+    "menus": [
+      {
+        "name": "Assets",
+        "locator": "~assets",
+        "submenus": [
+          {
+            "name": "Search",
+            "locator": "~search"
+          },
+          {
+            "name": "New",
+            "locator": "~new"
+          },
+          {
+            "name": "Edit",
+            "locator": "~edit"
+          },
+          {
+            "name": "Move",
+            "locator": "~move"
+          },
+          {
+            "name": "Remove",
+            "locator": "~remove"
+          },
+          {
+            "name": "Restock",
+            "locator": "~restock"
+          },
+          {
+            "name": "Reserve",
+            "locator": "~reserve"
+          },
+          {
+            "name": "CheckOut",
+            "locator": "~check-out"
+          },
+          {
+            "name": "CheckIn",
+            "locator": "~check-in"
+          },
+          {
+            "name": "Audit",
+            "locator": "~audit"
+          }
+        ]
+      },
+      {
+        "name": "Inventory",
+        "locator": "~inventory",
+        "submenus": [
+            {
+               "name": "Search",
+               "locator": "~search"
+            },
+            {
+               "name": "New",
+               "locator": "~new"
+            },
+            {
+                "name": "Edit",
+                "locator": "~edit"
+            },
+            {
+                "name": "Move",
+                "locator": "~move"
+            },
+            {
+                "name": "Remove",
+                "locator": "~remove"
+            },
+            {
+                "name": "Restock",
+                "locator": "~restock"
+            },
+            {
+                "name": "Audit",
+                "locator": "~audit"
+            }
+        ]
+      },
+      {
+        "name": "Order Request",
+        "locator": "~order-request",
+        "submenus": [
+            {
+               "name": "Order Request",
+               "locator": "~order-request"
+            },
+            {
+               "name": "Order History",
+               "locator": "~order-history"
+            }   
+        ]
+      },
+      {
+        "name": "Pick",
+        "locator": "~pick",
+        "submenus": [
+            {
+               "name": "Pick",
+               "locator": "~pick"
+            }  
+        ]
+      },
+      {
+        "name": "Pack",
+        "locator": "~pack",
+        "submenus": [
+            {
+               "name": "Pack Scan",
+               "locator": "~pack-scan"
+            }  
+        ]
+      },
+      {
+        "name": "Scan Container",
+        "locator": "~scan-container",
+        "submenus": [
+            {
+               "name": "Cancel Button",
+               "locator": "//android.widget.TextView[@text='Cancel']"
+            } 
+        ]
+      },
+      {
+        "name": "Delivery",
+        "locator": "~delivery",
+        "submenus": [
+            {
+               "name": "Add Delivery",
+               "locator": "//android.widget.TextView[@text='Add Delivery']"
+            },
+            {
+                "name": "Mark Delivery",
+                "locator": "//android.widget.TextView[@text='Mark Delivered']"
+            },
+            {
+                "name": "Order PickUP",
+                "locator": "//android.widget.TextView[@text='Order Pick Up']"
+            }   
+        ]
+      },
+      {
+        "name": "Shop",
+        "locator": "~shop",
+        "submenus": [
+            {
+               "name": "Shop",
+               "locator": "~shop"
+            } 
+        ]
+      },
+      {
+        "name": "Home",
+        "locator": "//android.widget.TextView[@text='Home']"
+      },
+      {
+        "name": "Help",
+        "locator": "~help"
+      },
+      {
+        "name": "Logout",
+        "locator": "~logout"
+      }
+    ]
+  }
