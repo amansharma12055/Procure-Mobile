@@ -46,7 +46,7 @@ describe("Home Page Test Cases",()=>{
       // await AssetPage.AssetTitleTextBox.setValue(faker.animal.cat());
       // await AssetPage.AssetModelTextBox.setValue(faker.color.human());
       // await custFun.ScrollDown();
-      // await custFun.SelectValueFromDropDown('Almouth', await AssetPage.AssetSiteDropDown);
+       await custFun.SelectValueFromDropDown('Almouth', await AssetPage.AssetSiteDropDown);
       // await custFun.SelectValueFromDropDown('Unassigned', await AssetPage.AssetLocationDropDown);
       // await custFun.SelectValueFromDropDown('Bombay', await AssetPage.AssetCategoryTextBox);
       // await custFun.ScrollDown();

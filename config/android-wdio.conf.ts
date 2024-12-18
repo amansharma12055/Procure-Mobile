@@ -202,15 +202,26 @@ exports.config = {
       //  const { default: fkill } = await import('fkill');
          //   await fkill(':4723', { force: true });
 
-        fs.readdir('reports/allure-results', (err: any, files: any) => {
-            if (err) throw err;
-          
-            for (const file of files) {
-              fs.unlink(path.join('reports/allure-results', file), (err: any) => {
-                if (err) throw err;
-              });
-            }
-        });
+         const allureResultsDir = 'reports/allure-results';
+
+         if (fs.existsSync(allureResultsDir)) {
+           fs.readdir(allureResultsDir, (err: any, files: any) => {
+             if (err) {
+               console.error(`Error reading directory: ${err.message}`);
+               return;
+             }
+         
+             for (const file of files) {
+               fs.unlink(path.join(allureResultsDir, file), (err: any) => {
+                 if (err) {
+                   console.error(`Error deleting file ${file}: ${err.message}`);
+                 }
+               });
+             }
+           });
+         } else {
+           console.log(`Directory "${allureResultsDir}" does not exist. Skipping cleanup.`);
+         }
     },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service

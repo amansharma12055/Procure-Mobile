@@ -46,6 +46,20 @@ export class customFunctions{
       await browser.pause(1000);
     }
 
+    public async SelectOptionFromDropDown(Text: string, Locator: WebdriverIO.Element){
+
+      await Locator.waitForDisplayed({timeout:10000});
+      await Locator.click();
+      await $('//android.widget.EditText').waitForDisplayed({timeout:10000});
+      await $('//android.widget.EditText').setValue(Text.trim());
+      await browser.pause(1000);
+      await $(`//android.widget.TextView[@text='${Text.trim()}']`).waitForDisplayed({timeout:10000});
+      await (await $(`//android.widget.TextView[@text='${Text.trim()}']`)).doubleClick();
+      await browser.pause(1000);
+    }
+
+
+
     public async selectDate(date: string, DateControl: WebdriverIO.Element) {
       var dateArray = date.split(" ");
       var day = dateArray[1].replace(',',"");
