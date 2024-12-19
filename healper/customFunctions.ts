@@ -1,5 +1,6 @@
 import loginData from "../resourse/loginData";
 import moment = require('moment');
+import { ChainablePromiseElement } from 'webdriverio';
 
 
 export class customFunctions{
@@ -138,11 +139,9 @@ export class customFunctions{
       await browser.pause(1000);
   }
 
-    public  async  waitForElementAndClick(element: WebdriverIO.Element, timeout: number = 5000): Promise<void> {
-    
-      await element.waitForExist({timeout:timeout});
-      await element.click();
-      console.log("Clicked on Element");
-            
-    }
+  public async waitForElementAndClick(element: ChainablePromiseElement, timeout: number = 5000) {
+    await element.waitForDisplayed({ timeout });
+    await element.click();
+    console.debug("Elemet Clicked");
+  } 
 }

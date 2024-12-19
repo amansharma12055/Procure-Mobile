@@ -3,6 +3,7 @@ import allure = require('allure-commandline');
 const androidAppPath = path.join(process.cwd(),"app/android/procure.apk");
 const reportPath = 'reports/allure-results'
 const fs = require("fs");
+import getPort from 'get-port';
 
 
 exports.config = {
@@ -77,7 +78,7 @@ exports.config = {
     capabilities: [{
         platformName: 'Android',
         maxInstances: 1,
-        "appium:deviceName": 'samsung SM-M326B', //'realme RMX3031',Pixel 6 -13
+        "appium:deviceName": 'realme X7', //'realme RMX3031',Pixel 6 -13
         "appium:platformVersion": "13.0",
         "appium:automationName": "UIAutomator2",
         "appium:app": androidAppPath, //"A:/Procure-Mobile/app/android/procure.apk",
@@ -119,7 +120,7 @@ exports.config = {
    
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 20000,
+    waitforTimeout: 30000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -138,7 +139,7 @@ exports.config = {
           {
             args: {
              // address: "localhost",
-              port: 4723,
+              port: getPort({ port: 4723 }),
               relaxedSecurity: true,
             },
             logPath: "./",
@@ -199,29 +200,14 @@ exports.config = {
      */
      onPrepare: async function (_config: any, _capabilities: any) {
         console.debug("Inside Before beforeSession *****************************************************");
-      //  const { default: fkill } = await import('fkill');
-         //   await fkill(':4723', { force: true });
+        const allureResultsDir = path.resolve('./reports/allure-results');
 
-         const allureResultsDir = 'reports/allure-results';
-
-         if (fs.existsSync(allureResultsDir)) {
-           fs.readdir(allureResultsDir, (err: any, files: any) => {
-             if (err) {
-               console.error(`Error reading directory: ${err.message}`);
-               return;
-             }
-         
-             for (const file of files) {
-               fs.unlink(path.join(allureResultsDir, file), (err: any) => {
-                 if (err) {
-                   console.error(`Error deleting file ${file}: ${err.message}`);
-                 }
-               });
-             }
-           });
-         } else {
-           console.log(`Directory "${allureResultsDir}" does not exist. Skipping cleanup.`);
-         }
+        if (fs.existsSync(allureResultsDir)) {
+            fs.rmSync(allureResultsDir, { recursive: true, force: true });
+            console.log('Allure results directory cleaned.');
+        } else {
+            console.log('Allure results directory does not exist. Skipping cleanup.');
+        }
     },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
@@ -381,3 +367,5 @@ exports.config = {
     // onReload: function(oldSessionId, newSessionId) {
     // }
 }
+
+

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+      "module": "commonjs",
       "types": [
           "node",
           "expect-webdriverio",
@@ -7,7 +8,7 @@
           "@wdio/mocha-framework"
           
       ],
-      "target": "ES5",
+      "target": "es2017",
       "resolveJsonModule": true,
       "esModuleInterop": true
   }

@@ -15,7 +15,7 @@ describe("Login to Procure Test Cases", () => {
   });
 
   
-  it("Test 1:- should login with valid credentials", async () => {
+  it.only("Test 1:- should login with valid credentials", async () => {
     
    await LoginScreen.loginWithTenat("priyaman@yahoo.com", "Test12!@", "Automation");
    
@@ -25,25 +25,25 @@ describe("Login to Procure Test Cases", () => {
       
     await LoginScreen.inputUsername.setValue("WrongUser@yopmail.com");
     await LoginScreen.inputPassword.setValue("WrongUserPassword"); 
-    await custFun.waitForElementAndClick(await LoginScreen.btnLogin);
+    await custFun.waitForElementAndClick(LoginScreen.btnLogin);
     await expect(LoginScreen.errorMessageText).toBeDisplayed();
     await expect(LoginScreen.errorMessageText).toHaveText("We can't find that email and password. You can reset your password or try again.");
-    await custFun.waitForElementAndClick(await LoginScreen.procureAleartOKButton); 
+    await custFun.waitForElementAndClick(LoginScreen.procureAleartOKButton); 
    
   });
   
   it(" Test 3:- Verify ForgotPassword Test", async () => {
     
-    await custFun.waitForElementAndClick(await LoginScreen.forgotPasswordLink);
+    await custFun.waitForElementAndClick(LoginScreen.forgotPasswordLink);
     await expect(LoginScreen.forgotPasswordHeader).toHaveText("Enter your e-mail address below to receive a password reset link");
-    await custFun.waitForElementAndClick(await LoginScreen.forgotPasswordSendButton)
+    await custFun.waitForElementAndClick(LoginScreen.forgotPasswordSendButton)
     await expect(LoginScreen.errorMessageText).toHaveText("Please enter an email address");
-    await custFun.waitForElementAndClick(await LoginScreen.procureAleartOKButton);
+    await custFun.waitForElementAndClick(LoginScreen.procureAleartOKButton);
     await browser.pause(2000);  
     await LoginScreen.forgotPasswordEmailTextBox.setValue("rx135hp@gmail.com");
-    await custFun.waitForElementAndClick(await LoginScreen.forgotPasswordSendButton);
+    await custFun.waitForElementAndClick(LoginScreen.forgotPasswordSendButton);
     await expect(LoginScreen.errorMessageText).toHaveText("Password reset email sent successfully");
-    await custFun.waitForElementAndClick(await LoginScreen.procureAleartOKButton);
+    await custFun.waitForElementAndClick(LoginScreen.procureAleartOKButton);
   });
 
 });

@@ -7,3 +7,4 @@ allure-report/index.html
 allure-report
 allure-report/index.html
 allure-report/export/influxDbData.txt
+wdio-appium.log
