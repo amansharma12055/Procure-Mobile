@@ -2,9 +2,5 @@ node_modules
 app/android
 app/ios
 .DS_Store
-allure-report/index.html
-allure-report/index.html
 allure-report
-allure-report/index.html
-allure-report/export/influxDbData.txt
 wdio-appium.log

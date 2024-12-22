@@ -6,7 +6,10 @@ export class LoginScreen {
   get inputUsername() { return $('~login-email-input');  }
   get inputPassword() { return $('~login-password-input');  }
   get btnLogin() { return $('~login');   }
-  get errorMessageText() { return $('//android.widget.TextView[@resource-id="android:id/message"]');  }
+  get errorMessageText() {  return $('//android.widget.TextView[contains(@text, "We can\'t find")]');}
+  get ForgotPasswordErrorMsg() {  return $('//android.widget.TextView[@text="Please enter a email."]');}
+  get ForgotPasswordSuccessMsg() {  return $('//android.widget.TextView[contains(@text, "If this is a valid email")]');}
+
   get procureLogo() { return $('//android.widget.ImageView[@resource-id="logo"]');   }
 
   get procureOrgSelection() { return $('~login-organizations-tenant-search-search-input');   }
@@ -15,22 +18,13 @@ export class LoginScreen {
 
   get procureSelectUATYES() { return $("//android.widget.TextView[@text='Yes']"); }
 
-  get procureAleartOKButton() { return $("//*[@text='OK']"); }
+  get forgotPasswordLink() { return $('//android.widget.TextView[@text="Forgot Password?"]'); }
 
-  get forgotPasswordLink() {
-    return $("~login-forgot-password");
-  }
+  get forgotPasswordHeader() { return $("//android.view.ViewGroup//*[contains(@text, 'Enter your e-mail')]");   }
 
-  get forgotPasswordHeader() {
-    return $("//android.view.ViewGroup//*[contains(@text, 'Enter your e-mail')]");
-  }
+  get forgotPasswordEmailTextBox() { return $("~forgot-password-email-input");  }
 
-  get forgotPasswordEmailTextBox() {
-    return $("~forgot-password-email");
-  }
-
-  get forgotPasswordSendButton() {
-    return $("~forgot-password-email-send");
+  get forgotPasswordSendButton() { return $("//android.widget.TextView[@text='Send']");
   }
 
   get procureLogoutButton() {
