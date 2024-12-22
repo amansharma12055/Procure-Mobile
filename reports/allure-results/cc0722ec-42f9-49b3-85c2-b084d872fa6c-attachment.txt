@@ -1,4 +1,0 @@
-{
-  "using": "xpath",
-  "value": "//android.widget.TextView[contains(@text, \"If this is a valid email\")]"
-}
