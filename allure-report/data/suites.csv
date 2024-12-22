@@ -1,4 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","16742"," Test 3:- Verify ForgotPassword Test","","Sun Dec 22 19:12:10 IST 2024","passed","Sun Dec 22 19:12:26 IST 2024","","Login to Procure Test Cases","",""
-"","23305","Test 1:- should login with valid credentials","","Sun Dec 22 19:11:22 IST 2024","passed","Sun Dec 22 19:11:45 IST 2024","","Login to Procure Test Cases","",""
-"","24712","Test 2:- should not login with invalid credentials","","Sun Dec 22 19:11:45 IST 2024","passed","Sun Dec 22 19:12:10 IST 2024","","Login to Procure Test Cases","",""
