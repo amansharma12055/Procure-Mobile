@@ -57,8 +57,8 @@ export class LoginScreen {
     console.debug("Tenat--->>>>>>>>>>>>>>>>>>>>>>>", Tenat);
     await browser.pause(2000);
     if (Tenat) { // Check if Tenat is not null or undefined
-      const isDisplayed = await this.procureOrgSelection.waitForDisplayed({ timeout: 10000 });
-      //const isDisplayed = await this.procureOrgSelection.isDisplayed();
+      const isDisplayed = await custFun.waitForDisplayed(this.procureOrgSelection, { timeout: 10000 });
+      console.debug("isDisplayed procureOrgSelection--->>>>>>>>>>>>>>>>>>>>>>>", isDisplayed);
       
       if (isDisplayed) { // Only proceed if the element is displayed
           console.debug("Inside Tenat Selection");

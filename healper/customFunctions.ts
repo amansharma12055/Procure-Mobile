@@ -139,9 +139,53 @@ export class customFunctions{
       await browser.pause(1000);
   }
 
-  public async waitForElementAndClick(element: ChainablePromiseElement, timeout: number = 5000) {
-    await element.waitForDisplayed({ timeout });
-    await element.click();
-    console.debug("Elemet Clicked");
-  } 
+  public async waitForElementAndClick(
+    element: ChainablePromiseElement, 
+    timeout: number = 5000, 
+    scrollableElement?: ChainablePromiseElement
+   ): Promise<void> {
+    try {
+      // Resolve the element to get the actual Element type
+      const resolvedElement = await element;
+  
+      // Wait for the element to be displayed within the timeout
+      await resolvedElement.waitForDisplayed({ timeout });
+  
+      // Ensure the element is enabled before clicking
+      await resolvedElement.waitForEnabled({ timeout });
+  
+      // Scroll into view if a scrollable element is provided
+      if (scrollableElement) {
+        const resolvedScrollableElement = await scrollableElement;
+        // Scroll within the scrollable container
+        await resolvedElement.scrollIntoView({ block: 'center' });
+      } else {
+        // Scroll to the viewport directly if no scrollable container is provided
+        await resolvedElement.scrollIntoView();
+      }
+  
+      // Perform the click action on the resolved element
+      await resolvedElement.click();
+      console.debug("Element clicked successfully!");
+      await browser.pause(1000);  // Optional pause to stabilize the action
+    } catch (error) {
+      console.error("Failed to click the element:", error);
+      throw error;  // Re-throw to ensure the test fails if the click fails
+    }
+  }
+  
+  
+
+  async waitForDisplayed(element: ChainablePromiseElement, options: { timeout?: number } = { timeout: 10000 }): Promise<boolean> {
+    try {
+      // Wait for the element to be displayed within the given timeout
+      await element.waitForDisplayed({ timeout: options.timeout });
+      console.debug("Element is displayed!");
+      return true; // Element became visible
+    } catch (error) {
+      console.error(`Error waiting for element to be displayed within ${options.timeout}ms:`);
+      return false; // Element didn't appear in the timeout
+    }
+  }
+  
 }
