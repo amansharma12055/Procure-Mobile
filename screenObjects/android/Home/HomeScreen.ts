@@ -95,52 +95,71 @@ export class HomeScreen {
   
   public async GetMenuLocator(mainMenu?: string, subMenu?: string): Promise<string> {
     if (!mainMenu) {
-      throw new Error("Main menu must be provided.");
+        throw new Error("Main menu must be provided.");
     }
-  
-    // Locate the main menu item in menuConfig
-    
-    const mainMenuItem = menuConfig.menus.find((menu: { name: string }) => menu.name === mainMenu);
 
-    if (!mainMenuItem) {
-      throw new Error(`Main menu "${mainMenu}" not found.`);
-    }
-  
-    // If a submenu is provided, focus on the submenu only
+    // If a submenu is provided, handle it first and skip the main menu locator creation
     if (subMenu) {
-      // Locate the submenu item in the main menu's submenus
-      const subMenuItem = mainMenuItem.submenus?.find((submenu: { name: string }) =>
-        submenu.name.toLowerCase() === subMenu.toLowerCase()
-      );
-      if (!subMenuItem) {
-        throw new Error(`Submenu "${subMenu}" not found in main menu "${mainMenu}".`);
-      }
-  
-      // Determine the submenu locator
-      let subMenuLocator = subMenuItem.locator || `//android.widget.TextView[@text="${subMenuItem.name}"]`;
-  
-      // Validate the submenu locator
-      const subMenuVisible = await browser.$(subMenuLocator).isExisting().catch(() => false);
-      if (!subMenuVisible) {
-        console.warn(`Submenu locator "${subMenuLocator}" is not valid. Falling back to dynamic XPath.`);
-        subMenuLocator = `//android.widget.TextView[@text="${subMenuItem.name}"]`;
-      }
-      console.log("Sub Menu Locator====>",subMenuLocator);
-      return subMenuLocator;
+        const mainMenuItem = menuConfig.menus.find((menu: { name: string }) =>
+            menu.name.toLowerCase() === mainMenu.toLowerCase()
+        );
+
+        if (!mainMenuItem) {
+            console.warn(`Main menu "${mainMenu}" not found in menuConfig. Cannot locate submenu "${subMenu}".`);
+            throw new Error(`Main menu "${mainMenu}" not found.`);
+        }
+
+        const subMenuItem = mainMenuItem.submenus?.find((submenu: { name: string }) =>
+            submenu.name.toLowerCase() === subMenu.toLowerCase()
+        );
+
+        let subMenuLocator: string;
+
+        if (!subMenuItem) {
+            console.warn(`Submenu "${subMenu}" not found in main menu "${mainMenu}". Falling back to dynamic XPath.`);
+            subMenuLocator = `//android.widget.TextView[@text="${subMenu}"]`;
+        } else {
+            subMenuLocator = subMenuItem.locator || `//android.widget.TextView[@text="${subMenuItem.name}"]`;
+        }
+
+        // Validate the submenu locator
+        const subMenuVisible = await browser.$(subMenuLocator).isExisting().catch(() => false);
+        if (!subMenuVisible) {
+            console.warn(`Submenu locator "${subMenuLocator}" is not valid. Falling back to dynamic XPath.`);
+            subMenuLocator = `//android.widget.TextView[@text="${subMenu}"]`;
+        }
+
+        console.log("Sub Menu Locator====>", subMenuLocator);
+        return subMenuLocator;
     }
-  
-    // If no submenu is provided, only handle the main menu
-    let mainMenuLocator = mainMenuItem.locator || `//android.widget.TextView[@text="${mainMenuItem.name}"]`;
-  
+
+    // If no submenu is provided, handle the main menu locator
+    const mainMenuItem = menuConfig.menus.find((menu: { name: string }) =>
+        menu.name.toLowerCase() === mainMenu.toLowerCase()
+    );
+
+   // console.log("Main Menu Item====>", mainMenuItem);
+
+    let mainMenuLocator: string;
+    if (!mainMenuItem) {
+        console.warn(`Main menu "${mainMenu}" not found in menuConfig. Falling back to dynamic XPath.`);
+        mainMenuLocator = `//android.widget.TextView[@text="${mainMenu}"]`;
+    } else {
+        mainMenuLocator = mainMenuItem.locator || `//android.widget.TextView[@text="${mainMenuItem.name}"]`;
+    }
+
     // Validate the main menu locator
     const mainMenuVisible = await browser.$(mainMenuLocator).isExisting().catch(() => false);
     if (!mainMenuVisible) {
-      console.warn(`Main menu locator "${mainMenuLocator}" is not valid. Falling back to dynamic XPath.`);
-      mainMenuLocator = `//android.widget.TextView[@text="${mainMenuItem.name}"]`;
+        console.warn(`Main menu locator "${mainMenuLocator}" is not valid. Falling back to dynamic XPath.`);
+        mainMenuLocator = `//android.widget.TextView[@text="${mainMenu}"]`;
     }
-  
+
+    console.log("Main Menu Locator====>", mainMenuLocator);
     return mainMenuLocator;
-  }
+}
+
+  
   
   
 

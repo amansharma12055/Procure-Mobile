@@ -1,6 +1,8 @@
 import loginData from "../resourse/loginData";
 import moment = require('moment');
+import PageFactory from "../pageFactory/mobPageFactory";
 import { ChainablePromiseElement } from 'webdriverio';
+import { SoftAssert } from '../healper/softAssertHelper';
 
 
 export class customFunctions{
@@ -43,7 +45,7 @@ export class customFunctions{
       await $('//android.widget.EditText').setValue(Text.trim());
       await browser.pause(1000);
       await $(`//android.widget.TextView[@text='${Text.trim()}']`).waitForDisplayed({timeout:10000});
-      await (await $(`//android.widget.TextView[@text='${Text.trim()}']`)).doubleClick();
+      await $(`//android.widget.TextView[@text='${Text.trim()}']`).doubleClick();
       await browser.pause(1000);
     }
 
@@ -55,10 +57,9 @@ export class customFunctions{
       await $('//android.widget.EditText').setValue(Text.trim());
       await browser.pause(1000);
       await $(`//android.widget.TextView[@text='${Text.trim()}']`).waitForDisplayed({timeout:10000});
-      await (await $(`//android.widget.TextView[@text='${Text.trim()}']`)).doubleClick();
+      await $(`//android.widget.TextView[@text='${Text.trim()}']`).doubleClick();
       await browser.pause(1000);
     }
-
 
 
     public async selectDate(date: string, DateControl: WebdriverIO.Element) {
@@ -68,11 +69,11 @@ export class customFunctions{
       var year = dateArray[2].replace(","," ");
       var dateToSelect = month +" "+year;
       await DateControl.click();
-      const mmYY = await $('[id="android:id/date_picker_header_date"]'); 
-      const prev = await $('[id="android:id/prev"]');
-      const next = await $('[id="android:id/next"]'); 
+      const mmYY = $('[id="android:id/date_picker_header_date"]'); 
+      const prev = $('[id="android:id/prev"]');
+      const next = $('[id="android:id/next"]'); 
       const thisMonth = moment(dateToSelect, "MMMM YYYY").isBefore();
-      const headerYear = await $('[id="android:id/date_picker_header_year"]');
+      const headerYear = $('[id="android:id/date_picker_header_year"]');
       const parts = (await mmYY.getText()).split(/,\s|\s/);
       if (parts.length < 3) {
         return 'Invalid Date Format'; // Handle invalid date format
@@ -98,8 +99,8 @@ export class customFunctions{
 
     private async GetUpdatedDate(): Promise<string>{
       await $("//android.view.View[@text='1']").click();
-      const mmYY = await $('[id="android:id/date_picker_header_date"]'); 
-      const headerYear = await $('[id="android:id/date_picker_header_year"]');
+      const mmYY = $('[id="android:id/date_picker_header_date"]'); 
+      const headerYear = $('[id="android:id/date_picker_header_year"]');
       const parts = (await mmYY.getText()).split(/,\s|\s/);
       if (parts.length < 3) {
         return 'Invalid Date Format'; // Handle invalid date format
@@ -140,42 +141,68 @@ export class customFunctions{
   }
 
   public async waitForElementAndClick(
-    element: ChainablePromiseElement, 
-    timeout: number = 5000, 
+    element: ChainablePromiseElement,
+    timeout: number = 5000,
     scrollableElement?: ChainablePromiseElement
-   ): Promise<void> {
+  ): Promise<void> {
     try {
-      // Resolve the element to get the actual Element type
-      const resolvedElement = await element;
+      const resolvedElement = element;
   
-      // Wait for the element to be displayed within the timeout
-      await resolvedElement.waitForDisplayed({ timeout });
+      // Wait for the element to be displayed
+      await browser.waitUntil(
+        async () => await resolvedElement.isDisplayed(),
+        { timeout, timeoutMsg: "Element is not displayed within the timeout." }
+      );
   
-      // Ensure the element is enabled before clicking
-      await resolvedElement.waitForEnabled({ timeout });
-  
-      // Scroll into view if a scrollable element is provided
-      if (scrollableElement) {
-        const resolvedScrollableElement = await scrollableElement;
-        // Scroll within the scrollable container
-        await resolvedElement.scrollIntoView({ block: 'center' });
-      } else {
-        // Scroll to the viewport directly if no scrollable container is provided
-        await resolvedElement.scrollIntoView();
+      // Ensure the element is enabled
+      const isEnabled = await resolvedElement.isEnabled();
+      if (!isEnabled) {
+        throw new Error("Element is not enabled for interaction.");
       }
   
-      // Perform the click action on the resolved element
+      // Scroll to the element if needed
+      try {
+        if (scrollableElement) {
+          const scrollableElementResolved = await scrollableElement;
+          if (await scrollableElementResolved.isDisplayed()) {
+            await resolvedElement.scrollIntoView({
+              block: "center",
+              inline: "center",
+              behavior: "smooth",
+            });
+          } else {
+            console.warn("Scrollable element is not displayed, skipping scrolling.");
+          }
+        } else {
+          await resolvedElement.scrollIntoView({
+            block: "center",
+            inline: "center",
+            behavior: "smooth",
+          });
+        }
+      } catch (scrollError) {
+        console.warn(
+          "Scrolling to the element failed. Attempting to proceed without scrolling.",
+          scrollError
+        );
+      }
+  
+      // Perform the click
+      console.debug("Resolved element selector:", await element.selector);
       await resolvedElement.click();
       console.debug("Element clicked successfully!");
-      await browser.pause(1000);  // Optional pause to stabilize the action
+      await browser.pause(1000); // Optional pause for stability
     } catch (error) {
       console.error("Failed to click the element:", error);
-      throw error;  // Re-throw to ensure the test fails if the click fails
+      throw error; // Re-throw the error to fail the test
     }
   }
   
   
-
+  
+  
+  
+ 
   async waitForDisplayed(element: ChainablePromiseElement, options: { timeout?: number } = { timeout: 10000 }): Promise<boolean> {
     try {
       // Wait for the element to be displayed within the given timeout
@@ -185,6 +212,28 @@ export class customFunctions{
     } catch (error) {
       console.error(`Error waiting for element to be displayed within ${options.timeout}ms:`);
       return false; // Element didn't appear in the timeout
+    }
+  }
+
+  public async verifyMenuItems( mainMenu: string, subMenuItems: string[]): Promise<void> {
+    const HomePage = PageFactory.createHomePage();
+     const softAssert = new SoftAssert();
+
+    for (const subMenu of subMenuItems) {
+      const isDisplayed = await $(await HomePage.GetMenuLocator(mainMenu, subMenu)).isDisplayed().catch(() => false);
+      await softAssert.softAssert(isDisplayed, true, `${mainMenu} ${subMenu} Menu is not visible`);
+    }
+    // Assert all after verifying all items
+    await softAssert.softAssertAll();
+  }
+
+  async  verifyMenuVisibility(menuNames: string[]): Promise<void> {
+    const HomePage = PageFactory.createHomePage();
+    for (const menuName of menuNames) {
+      const menuLocator = await HomePage.GetMenuLocator(menuName);
+      await expect($(menuLocator)).toBeDisplayed({
+        message: `${menuName} Menu not visible`,
+      });
     }
   }
   
