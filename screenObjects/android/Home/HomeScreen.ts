@@ -1,5 +1,7 @@
 import { customFunctions } from '../../../healper/customFunctions';
-import menuConfig from '../../../resourse/menu.json'
+import menuConfig from '../../../resourse/menu.json';
+import PageFactory from "../../../pageFactory/mobPageFactory";
+
 export class HomeScreen {
 
 
@@ -67,19 +69,33 @@ export class HomeScreen {
  * @param {string} [submenuName] - The name of the submenu (optional).
  */
   public async navigateToMenu(menuName: string, submenuName?: string): Promise<void> {
+    const custFun = PageFactory.CustomFunctions();
     try {
-      // Get the XPath locator for the menu (main or submenu)
-      const locator = await this.GetMenuLocator(menuName, submenuName);
+      // Step 1: Navigate to the main menu
+      const mainMenuLocator = await this.GetMenuLocator(menuName);
+      //console.log("Main Menu Locator====>", mainMenuLocator);
   
-      // Attempt to find the element using the locator
-      const menuElement = browser.$(locator);
-  
-      if (await menuElement.isDisplayed()) {
-        // Click the menu element if displayed
-        await menuElement.click();
+      const mainMenuElement = browser.$(mainMenuLocator);
+      if (await mainMenuElement.isDisplayed()) {
+        await mainMenuElement.click();
       } else {
-        // Log a warning if the element is not displayed
-        console.warn(`Menu '${submenuName ? submenuName : menuName}' is not displayed.`);
+        console.warn(`Main menu '${menuName}' is not displayed.`);
+        throw new Error(`Main menu '${menuName}' is not displayed.`);
+      }
+  
+      // Step 2: Navigate to the submenu, if provided
+      if (submenuName) {
+        await custFun.waitForElementAndClick(this.HamburgerMenu);
+        const submenuLocator = await this.GetMenuLocator(menuName, submenuName);
+        //console.log("Submenu Locator====>", submenuLocator);
+  
+        const submenuElement = browser.$(submenuLocator);
+        if (await submenuElement.isDisplayed()) {
+          await submenuElement.click();
+        } else {
+          console.warn(`Submenu '${submenuName}' is not displayed.`);
+          throw new Error(`Submenu '${submenuName}' is not displayed.`);
+        }
       }
     } catch (error) {
       console.error(
@@ -89,6 +105,7 @@ export class HomeScreen {
       throw error;
     }
   }
+  
   
   
  

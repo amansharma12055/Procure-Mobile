@@ -26,27 +26,22 @@ describe("Home Page Test Cases",()=>{
     });  
 
     it("Test 1 :- Verify Add New Asset Test",async () => {
-        
-      await NavigateTo.NavigateToMenu("assets","new");
-      // await custFun.waitForElementAndClick(await NavigateTo.AssetsMainMenuLink);
-      // await custFun.waitForElementAndClick(await NavigateTo.proccureHamburgerMenu);
-      // await custFun.waitForElementAndClick(await NavigateTo.AstInvNewLink);
-      // (await NavigateTo.AssetsMainMenuLink).click();
-      // (await LoginPage.proccureHamburgerMenu).click();
-      // (await NavigateTo.AstInvNewLink).click();
-
-
-      // await custFun.waitForElementAndClick(await NavigateTo.AssetsMainMenuLink);
-      // await custFun.waitForElementAndClick(await LoginPage.proccureHamburgerMenu);
-      // await custFun.waitForElementAndClick(await NavigateTo.AstInvNewLink);
       
+      await NavigateTo.navigateToMenu("Assets","New");
+      console.log("Navigated to Assets New Page");
+      await browser.pause(10000);
+      
+      await AssetPage.selectDateMobile("06/12/2024",AssetPage.AssetPurchaseDateComboBox);
+      await AssetPage.AddNewAsset();
+      await browser.pause(100000);
+     
       
       // await browser.pause(100000);
-       await AssetPage.AssetNoUPCCheckBox.doubleClick()
+      // await AssetPage.AssetNoUPCCheckBox.doubleClick()
       // await AssetPage.AssetTitleTextBox.setValue(faker.animal.cat());
       // await AssetPage.AssetModelTextBox.setValue(faker.color.human());
       // await custFun.ScrollDown();
-       await custFun.SelectValueFromDropDown('Almouth', await AssetPage.AssetSiteDropDown);
+      // await custFun.SelectValueFromDropDown('Almouth', await AssetPage.AssetSiteDropDown);
       // await custFun.SelectValueFromDropDown('Unassigned', await AssetPage.AssetLocationDropDown);
       // await custFun.SelectValueFromDropDown('Bombay', await AssetPage.AssetCategoryTextBox);
       // await custFun.ScrollDown();

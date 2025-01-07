@@ -44,8 +44,9 @@ exports.config = {
     //
     specs: [
         
-            '../test/android/Home/*.ts',
+           // '../test/android/Home/*.ts',
           //  '../test/android/Login/*.ts'
+              '../test/android/AssetInventory/*.ts',
         
     ],
     

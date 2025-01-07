@@ -29,7 +29,7 @@ describe("Home Page Test Cases",()=>{
       //await expect(await $(await HomePage.GetMenuLocator("Admin"))).toBeDisplayed({message:"Admin Menu not visible"});
    });
 
-   it.only("Test 2 :- Verify Asset Menu Link Test",async () => {
+   it("Test 2 :- Verify Asset Menu Link Test",async () => {
       
       await HomePage.navigateToMenu("Assets");
       await custFun.waitForElementAndClick(HomePage.HamburgerMenu);
