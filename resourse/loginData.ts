@@ -2,7 +2,7 @@ export default{
     "UAT":[
         {
             "SuperAdmin":{
-             "email":"priyaman@yahoo.com",
+             "email":"automation@yopmail.com",
              "password":"Test12!@"
             },
             "Admin":{

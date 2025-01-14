@@ -1,4 +1,5 @@
 //import { customFunctions } from '../../../healper/customFunctions';
+import { ChainablePromiseElement } from "webdriverio";
 import PageFactory from "../../../pageFactory/mobPageFactory";
 import { faker } from '@faker-js/faker';
 
@@ -72,7 +73,7 @@ export class AssetInventoryScreen{
     
     get AssetSaveButton() {return $('~asset-new-save');}
     get AssetCancelButton() {return $('~asset-new-cancel');}
-    get AssetAlertMSG() {return $('[id="android:id/message"]');}
+    get AssetCreatedMSG() {return $('//android.widget.TextView[@text="This asset has been successfully created."]');}
     get AssetAlertMSGOKButton() {return $('//android.widget.Button[@text="OK"]');}
     
     
@@ -80,82 +81,39 @@ export class AssetInventoryScreen{
 
     async  AddNewAsset(UPC?: string) {
        
-        const custFun = PageFactory.CustomFunctions();
-       // await this.AssetPurchaseDateComboBox.click();
-        await this.AssetPurchaseDateComboBox.setValue("01/06/2025");
-      //  await custFun.scrollToElementAndSetValue(this.AssetPurchaseDateComboBox,"01/06/2025");
-        
-        
-        
-        
-        
-        await this.NewAssetTitle.waitForExist({ timeout: 10000 });
-            if(UPC != null)
-            {
-                await this.UPCTextBox.setValue(UPC);
-            } 
-            else
-            { 
-                await this.UPCChckBox.click();
-            }
-        await custFun.scrollToElementAndSetValue(this.AssetTitleTextBox,faker.vehicle.bicycle());
-        await custFun.scrollToElementAndSetValue(this.AssetModelTextBox,faker.vehicle.model());
-        await custFun.scrollToElementAndSetValue(this.AssetModelNumberTextBox,faker.vehicle.vin());
-        await custFun.SelectValueFromDropDownByIndex(this.AssetCategoryDropdown,1);
-        await custFun.scrollToElementAndSetValue(this.AssetDescriptionTextBox,"Mobile Automation Testing");
-        await custFun.SelectValueFromDropDownByIndex(this.AssetVendorDropdown,1);
-        await custFun.scrollToElementAndSetValue(this.AssetBrandTextBox,faker.vehicle.manufacturer());
-        await custFun.SelectValueFromDropDownByIndex(this.AssetManufacturerDropdown,1);
-        await custFun.SelectValueFromDropDownByIndex(this.AssetSiteDropDown,1);
-        await custFun.SelectValueFromDropDownByIndex(this.AssetLocationDropDown,1);
-        await custFun.scrollToElementAndSetValue(this.AssetQuantityTextBox,"99");
-        await custFun.scrollToElementAndSetValue(this.AssetCostTextBox,"99.99");
-        await custFun.scrollToElementAndSetValue(this.AssetCostOverrideTextBox,"0.99");
-
+         const custFun = PageFactory.CustomFunctions();
+        // await this.NewAssetTitle.waitForExist({ timeout: 10000 });
+        // UPC != null ? await this.UPCTextBox.setValue(UPC) : await this.UPCChckBox.click();
+        // await custFun.scrollToElementAndSetValue(this.AssetTitleTextBox,faker.vehicle.bicycle());
+        // await custFun.scrollToElementAndSetValue(this.AssetModelTextBox,faker.vehicle.model());
+        // await custFun.scrollToElementAndSetValue(this.AssetModelNumberTextBox,faker.vehicle.vin());
+        // await custFun.SelectValueFromDropDownByIndex(this.AssetCategoryDropdown,1);
+        // await custFun.scrollToElementAndSetValue(this.AssetDescriptionTextBox,"Mobile Automation Testing");
+        // await custFun.SelectValueFromDropDownByIndex(this.AssetVendorDropdown,1);
+        // await custFun.scrollToElementAndSetValue(this.AssetBrandTextBox,faker.vehicle.manufacturer());
+        // await custFun.SelectValueFromDropDownByIndex(this.AssetManufacturerDropdown,1);
+        // await custFun.SelectValueFromDropDownByIndex(this.AssetSiteDropDown,1);
+        // await custFun.SelectValueFromDropDownByIndex(this.AssetLocationDropDown,1);
+        // await custFun.scrollToElementAndSetValue(this.AssetQuantityTextBox,"99");
+        // await custFun.scrollToElementAndSetValue(this.AssetCostTextBox,"99.99");
+        // await custFun.scrollToElementAndSetValue(this.AssetCostOverrideTextBox,"0.99");
+        const PurchaseDate = await custFun.DateFormat("sub", 1, new Date());
+        await custFun.selectDateMobile(PurchaseDate, this.AssetPurchaseDateComboBox);
+        const ReplacementDate = await custFun.DateFormat("Add", 0, new Date());
+        await custFun.selectDateMobile(ReplacementDate, this.AssetReplacementDateComboBox);
+        const WarrantyExpires = await custFun.DateFormat("Add", 1, new Date());
+        await custFun.selectDateMobile(WarrantyExpires, this.AssetWarrantyExpiresComboBox);
         await this.AssetSaveButton.click();
-        
-      
-     
+        await this.AssetCreatedMSG.waitForExist({ timeout: 10000 });
+    
         
     }
 
-    async selectDateMobile(date: string, datePickerInputLocator: ChainablePromiseElement) {
-        const dateArray = date.split(" ");
-        const day = dateArray[1].replace(",", "");
-        const month = dateArray[0];
-        const year = dateArray[2];
-        const desiredDate = `${month} ${year}`;
     
-        // Open the date picker by clicking the input field
-        await datePickerInputLocator.click();
     
-        // Get current year and month
-        const currentYearLocator = '//android.widget.TextView[@resource-id="android:id/date_picker_header_year"]';
-        const currentDateLocator = '//android.widget.TextView[@resource-id="android:id/date_picker_header_date"]';
-        let currentYear = await $(currentYearLocator).getText();
-        let currentMonth = (await $(currentDateLocator).getText()).split(",")[1].trim().split(" ")[0];
     
-        const prevMonthButton = await $('~Previous month');
-        const nextMonthButton = await $('~Next month');
     
-        // Adjust year and month to match the desired date
-        while (`${currentMonth} ${currentYear}` !== desiredDate) {
-            const isBefore = new Date(`${desiredDate}`) < new Date(`${currentMonth} ${currentYear}`);
-            if (isBefore) {
-                await prevMonthButton.click();
-            } else {
-                await nextMonthButton.click();
-            }
     
-            // Update the current year and month after changing
-            currentYear = await $(currentYearLocator).getText();
-            currentMonth = (await $(currentDateLocator).getText()).split(",")[1].trim().split(" ")[0];
-        }
-    
-        // Select the day
-        const dayLocator = `~${day} ${month} ${year}`;
-        await $(dayLocator).click();
-    }
     
 
     

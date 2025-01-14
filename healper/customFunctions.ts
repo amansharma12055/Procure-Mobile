@@ -48,7 +48,7 @@ export class customFunctions {
 
     // Click to open the dropdown
     await Locator.click();
-   
+
 
     // Construct the locator for the desired option based on the index
     const optionLocator = `//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup[${index}]`;
@@ -63,8 +63,6 @@ export class customFunctions {
     // Optionally pause after selection
     await browser.pause(1000);
   }
-
-
 
 
   public async SelectOptionFromDropDown(Text: string, Locator: WebdriverIO.Element) {
@@ -128,23 +126,6 @@ export class customFunctions {
     return Curretdate;
   }
 
-  public async DateFormat(operation: string, dayCount: number, inputDate: Date) {
-
-    if (inputDate === undefined) {
-      inputDate = new Date();
-    }
-    const date = new Date(inputDate);
-    var formatDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    if (operation.toLowerCase() === "add") {
-      formatDate = new Date(formatDate.setDate(formatDate.getDate() + dayCount));
-    }
-    if (operation.toLowerCase() === "sub") {
-      formatDate = new Date(formatDate.setDate(formatDate.getDate() - dayCount));
-    }
-    var finalDate = formatDate.toLocaleTimeString([], { year: 'numeric', month: 'short', day: 'numeric' });
-    console.log("finalDate===", finalDate);
-    return finalDate;
-  }
 
   public async ScrollDown() {
     await driver.touchAction([{ action: 'longPress', x: 0, y: 1000 }, { action: 'moveTo', x: 0, y: 20 }, 'release']);
@@ -158,13 +139,19 @@ export class customFunctions {
     await browser.pause(1000);
   }
 
-  public async waitForElementAndClick(
-    element: ChainablePromiseElement,
+  public async waitForElementAndClick(element: ChainablePromiseElement,
     timeout: number = 5000,
     scrollableElement?: ChainablePromiseElement
   ): Promise<void> {
     try {
       const resolvedElement = element;
+
+      // Scroll to the element if needed
+      try {
+        await resolvedElement.scrollIntoView();
+      } catch (error) {
+        throw new Error(`Failed to scroll to element "${resolvedElement}": ${error.message}`);
+      }
 
       // Wait for the element to be displayed
       await browser.waitUntil(
@@ -178,33 +165,7 @@ export class customFunctions {
         throw new Error("Element is not enabled for interaction.");
       }
 
-      // Scroll to the element if needed
-      try {
-        if (scrollableElement) {
-          const scrollableElementResolved = scrollableElement;
-          if (await scrollableElementResolved.isDisplayed()) {
-            await resolvedElement.scrollIntoView({
-              block: "center",
-              inline: "center",
-              behavior: "smooth",
-            });
-          } else {
-            console.warn("Scrollable element is not displayed, skipping scrolling.");
-          }
-        } else {
-          await resolvedElement.scrollIntoView({
-            block: "center",
-            inline: "center",
-            behavior: "smooth",
-          });
-        }
-      } catch (scrollError) {
-        console.warn(
-          "Scrolling to the element failed. Attempting to proceed without scrolling.",
-          scrollError
-        );
-      }
-
+      
       // Perform the click
       console.debug("Resolved element selector:", await element.selector);
       await resolvedElement.click();
@@ -282,6 +243,102 @@ export class customFunctions {
     } catch (error) {
       throw new Error(`Failed to set value on element "${selector}": ${error.message}`);
     }
+  }
+
+  async selectDateMobile(date: string, datePickerInputLocator: ChainablePromiseElement) {
+    if (!date) {
+      throw new Error("Date is not provided or invalid");
+    }
+
+    //console.log("Input date:", date);
+
+    const dateArray = date.split(" ");
+    if (dateArray.length < 3) {
+      throw new Error("Date format is invalid. Expected format: 'December 7, 2024'");
+    }
+
+    const day = dateArray[1].replace(",", "").padStart(2, '0');
+    const month = dateArray[0].replace(",", " ");
+    const year = dateArray[2].replace(",", " ");
+    const desiredDateString = `${day} ${month} ${year}`;
+    
+    try {
+      await datePickerInputLocator.scrollIntoView();
+    } catch (error) {
+      throw new Error(`Failed to scroll to element "${datePickerInputLocator}": ${error.message}`);
+    }
+    // Open the date picker
+    await datePickerInputLocator.click();
+
+    const prevMonthButton = await $('~Previous month');
+    const nextMonthButton = await $('~Next month');
+
+    let isDateFound = false;
+
+    while (!isDateFound) {
+      // Fetch all visible dates
+      const currentDates = await $$('//android.view.View[@content-desc]');
+      if (!currentDates || await currentDates.length === 0) {
+        throw new Error("No dates found in the calendar grid.");
+      }
+
+      const visibleDates = [];
+      for (let dateElement of currentDates) {
+        const contentDesc = await dateElement.getAttribute('content-desc');
+        visibleDates.push(contentDesc);
+
+        // console.log("contentDesc===", contentDesc);
+        // console.log("desiredDateString===", desiredDateString);
+
+        // Check if the desired date matches the content-desc
+        if (contentDesc === desiredDateString) {
+          isDateFound = true;
+          await dateElement.click(); // Select the desired date
+          await $$('//android.widget.Button[@resource-id="android:id/button1"]')[0].click(); // Click OK
+          break;
+        }
+      }
+
+      // console.log("Visible dates:", visibleDates);
+
+      if (!isDateFound) {
+        const firstVisibleDate = new Date(visibleDates[0]);
+        const lastVisibleDate = new Date(visibleDates[visibleDates.length - 1]);
+        const desiredDate = new Date(`${month} ${day}, ${year}`);
+
+        // console.log("Desired date:", desiredDate);
+        // console.log("First visible date:", firstVisibleDate);
+        // console.log("Last visible date:", lastVisibleDate);
+
+        if (desiredDate < firstVisibleDate) {
+          await prevMonthButton.click();
+        } else if (desiredDate > lastVisibleDate) {
+          await nextMonthButton.click();
+        } else {
+          throw new Error("Date navigation logic failed.");
+        }
+      }
+    }
+  }
+
+  async DateFormat(operation: string, monthCount: number, inputDate: Date): Promise<string> {
+    if (!inputDate) {
+      inputDate = new Date();
+    }
+
+    const date = new Date(inputDate);
+    let formatDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (operation.toLowerCase() === "add") {
+      formatDate = new Date(formatDate.setMonth(formatDate.getMonth() + monthCount));
+    } else if (operation.toLowerCase() === "sub") {
+      formatDate = new Date(formatDate.setMonth(formatDate.getMonth() - monthCount));
+    }
+
+    // Convert to desired format: "Month Day, Year"
+    const finalDate = formatDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    console.log("finalDate===", finalDate);
+    return finalDate;
   }
 
 
