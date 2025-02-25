@@ -81,29 +81,30 @@ export class AssetInventoryScreen{
 
     async  AddNewAsset(UPC?: string) {
        
-         const custFun = PageFactory.CustomFunctions();
-        // await this.NewAssetTitle.waitForExist({ timeout: 10000 });
-        // UPC != null ? await this.UPCTextBox.setValue(UPC) : await this.UPCChckBox.click();
-        // await custFun.scrollToElementAndSetValue(this.AssetTitleTextBox,faker.vehicle.bicycle());
-        // await custFun.scrollToElementAndSetValue(this.AssetModelTextBox,faker.vehicle.model());
-        // await custFun.scrollToElementAndSetValue(this.AssetModelNumberTextBox,faker.vehicle.vin());
-        // await custFun.SelectValueFromDropDownByIndex(this.AssetCategoryDropdown,1);
-        // await custFun.scrollToElementAndSetValue(this.AssetDescriptionTextBox,"Mobile Automation Testing");
-        // await custFun.SelectValueFromDropDownByIndex(this.AssetVendorDropdown,1);
-        // await custFun.scrollToElementAndSetValue(this.AssetBrandTextBox,faker.vehicle.manufacturer());
-        // await custFun.SelectValueFromDropDownByIndex(this.AssetManufacturerDropdown,1);
-        // await custFun.SelectValueFromDropDownByIndex(this.AssetSiteDropDown,1);
-        // await custFun.SelectValueFromDropDownByIndex(this.AssetLocationDropDown,1);
-        // await custFun.scrollToElementAndSetValue(this.AssetQuantityTextBox,"99");
-        // await custFun.scrollToElementAndSetValue(this.AssetCostTextBox,"99.99");
-        // await custFun.scrollToElementAndSetValue(this.AssetCostOverrideTextBox,"0.99");
-        const PurchaseDate = await custFun.DateFormat("sub", 1, new Date());
-        await custFun.selectDateMobile(PurchaseDate, this.AssetPurchaseDateComboBox);
-        const ReplacementDate = await custFun.DateFormat("Add", 0, new Date());
-        await custFun.selectDateMobile(ReplacementDate, this.AssetReplacementDateComboBox);
-        const WarrantyExpires = await custFun.DateFormat("Add", 1, new Date());
-        await custFun.selectDateMobile(WarrantyExpires, this.AssetWarrantyExpiresComboBox);
-        await this.AssetSaveButton.click();
+        const custFun = PageFactory.CustomFunctions();
+        await this.NewAssetTitle.waitForExist({ timeout: 10000 });
+        UPC != null ? await this.UPCTextBox.setValue(UPC) : await this.UPCChckBox.click();
+        await custFun.scrollToElementAndSetValue(this.AssetTitleTextBox,faker.vehicle.bicycle());
+        await custFun.scrollToElementAndSetValue(this.AssetModelTextBox,faker.vehicle.model());
+        await custFun.scrollToElementAndSetValue(this.AssetModelNumberTextBox,faker.vehicle.vin());
+        await custFun.SelectValueFromDropDownByIndex(this.AssetCategoryDropdown,1);
+        await custFun.scrollToElementAndSetValue(this.AssetDescriptionTextBox,"Mobile Automation Testing");
+        await custFun.SelectValueFromDropDownByIndex(this.AssetVendorDropdown,1);
+        await custFun.scrollToElementAndSetValue(this.AssetBrandTextBox,faker.vehicle.manufacturer());
+        await custFun.SelectValueFromDropDownByIndex(this.AssetManufacturerDropdown,1);
+        await custFun.SelectValueFromDropDownByIndex(this.AssetSiteDropDown,1);
+        await custFun.SelectValueFromDropDownByIndex(this.AssetLocationDropDown,1);
+        await custFun.scrollToElementAndSetValue(this.AssetQuantityTextBox,"99");
+        await custFun.scrollToElementAndSetValue(this.AssetCostTextBox,"99.99");
+        await custFun.scrollToElementAndSetValue(this.AssetCostOverrideTextBox,"0.99");
+        // const PurchaseDate = await custFun.DateFormat("sub", 1, new Date());
+        // await custFun.selectDateMobile(PurchaseDate, this.AssetPurchaseDateComboBox);
+        // const ReplacementDate = await custFun.DateFormat("Add", 0, new Date());
+        // await custFun.selectDateMobile(ReplacementDate, this.AssetReplacementDateComboBox);
+        // const WarrantyExpires = await custFun.DateFormat("Add", 1, new Date());
+        // await custFun.selectDateMobile(WarrantyExpires, this.AssetWarrantyExpiresComboBox);
+        await browser.pause(10000);
+        await custFun.waitForElementAndClick(this.AssetSaveButton);
         await this.AssetCreatedMSG.waitForExist({ timeout: 10000 });
     
         

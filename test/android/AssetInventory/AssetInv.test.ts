@@ -15,7 +15,7 @@ describe("Home Page Test Cases",()=>{
 
     before(async()=>{
       await LoginPage.Logout();
-    //  await LoginPage.SelectEnvironment();
+      await LoginPage.SelectEnvironment();
       await LoginPage.loginWithTenat();
     });
 
@@ -25,10 +25,17 @@ describe("Home Page Test Cases",()=>{
     //  await expect(NavigateTo.AssetsMainMenuLink).toBeDisplayed();
     });  
 
-    it("Test 1 :- Verify Add New Asset Test",async () => {
+    it.only("Test 1 :- Verify Add New Asset Test",async () => {
       
       await NavigateTo.navigateToMenu("Assets","New");
       await AssetPage.AddNewAsset();
+      await expect(AssetPage.AssetCreatedMSG).toBeDisplayed();    
+    });
+
+    it("Test 2 :- Verify Add New Asset With UPC Test",async () => {
+      
+      await NavigateTo.navigateToMenu("Assets","New");
+      await AssetPage.AddNewAsset("08903557725230")//faker.string.numeric(12));
       await expect(AssetPage.AssetCreatedMSG).toBeDisplayed();    
     });
 

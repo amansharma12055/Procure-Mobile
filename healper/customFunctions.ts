@@ -139,43 +139,40 @@ export class customFunctions {
     await browser.pause(1000);
   }
 
-  public async waitForElementAndClick(element: ChainablePromiseElement,
-    timeout: number = 5000,
-    scrollableElement?: ChainablePromiseElement
-  ): Promise<void> {
+  public async waitForElementAndClick(element: ChainablePromiseElement, timeout: number = 5000): Promise<void> 
+  {
     try {
-      const resolvedElement = element;
-
-      // Scroll to the element if needed
-      try {
-        await resolvedElement.scrollIntoView();
-      } catch (error) {
-        throw new Error(`Failed to scroll to element "${resolvedElement}": ${error.message}`);
-      }
-
+      const resolvedElement = element; // Ensure we await the element
+  
+      console.debug("Element received:", resolvedElement);
+      console.debug("Resolved element selector:", resolvedElement.selector);
+  
+      // Scroll to the element if it's present
+   
+        await resolvedElement.scrollIntoView({ block: "center" });
+      
       // Wait for the element to be displayed
       await browser.waitUntil(
         async () => await resolvedElement.isDisplayed(),
         { timeout, timeoutMsg: "Element is not displayed within the timeout." }
       );
-
+  
       // Ensure the element is enabled
-      const isEnabled = await resolvedElement.isEnabled();
-      if (!isEnabled) {
-        throw new Error("Element is not enabled for interaction.");
+      if (!(await resolvedElement.isEnabled())) {
+        throw new Error(`Element is not enabled for interaction: ${resolvedElement.selector}`);
       }
-
-      
+  
       // Perform the click
-      console.debug("Resolved element selector:", await element.selector);
       await resolvedElement.click();
       console.debug("Element clicked successfully!");
+  
       await browser.pause(1000); // Optional pause for stability
     } catch (error) {
       console.error("Failed to click the element:", error);
       throw error; // Re-throw the error to fail the test
     }
   }
+  
 
 
   async waitForDisplayed(element: ChainablePromiseElement, options: { timeout?: number } = { timeout: 10000 }): Promise<boolean> {
@@ -227,7 +224,7 @@ export class customFunctions {
 
     // Scroll to the element
     try {
-      await selector.scrollIntoView();
+      await selector.scrollIntoView({block: "center"});
     } catch (error) {
       throw new Error(`Failed to scroll to element "${selector}": ${error.message}`);
     }
